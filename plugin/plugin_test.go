@@ -75,6 +75,10 @@ func TestPlugin(t *testing.T) {
 	ko := options.KeyOpts{
 		KeyRef: keyRef,
 		PassFunc: func(b bool) ([]byte, error) {
+			pw, ok := os.LookupEnv("COSIGN_PASSWORD")
+			if ok {
+				return []byte(pw), nil
+			}
 			return []byte("password"), nil
 		},
 	}

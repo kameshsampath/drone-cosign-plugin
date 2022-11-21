@@ -13,6 +13,7 @@ steps:
   - go test -v ./...
   environment:
     KO_DOCKER_REPO: "registry:5000/test"
+    COSIGN_PASSWORD: password
 
 - name: build
   image: goreleaser/goreleaser
