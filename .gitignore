@@ -1,0 +1,9 @@
+.env
+release/
+
+
+dist/
+*.key
+*.pub
+secrets*
+.direnv

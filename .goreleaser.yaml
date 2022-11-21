@@ -1,0 +1,39 @@
+project_name: plugin
+gomod:
+  proxy: true
+builds:
+  - id: plugin
+    main: main.go
+    binary: plugin
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    asmflags:
+      - all=-trimpath={{.Env.GOPATH}}
+    ldflags:
+      - '-s -w -X main.build={{.Version}} -extldflags "-static"'
+    goarch:
+      - amd64
+      - arm64
+    hooks:
+      post:
+        - cmd: ./scripts/rename.py --target-arch {{ .Target }}
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+release:
+  draft: false
+  prerelease: "true"
+  name_template: "Release {{ .Tag }}"

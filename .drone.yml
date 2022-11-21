@@ -1,0 +1,31 @@
+kind: pipeline
+type: docker
+name: default
+
+services:
+  - name: registry
+    image: registry:2
+
+steps:
+- name: test
+  image: golang
+  commands:
+  - go test -v ./...
+  environment:
+    KO_DOCKER_REPO: "registry:5000/test"
+
+- name: build
+  image: goreleaser/goreleaser
+  pull: if-not-exists
+  commands:
+    - goreleaser build --snapshot --rm-dist
+
+- name: push
+  image: thegeeklab/drone-docker-buildx
+  privileged: true
+  pull: if-not-exists
+  settings:
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    context: dist

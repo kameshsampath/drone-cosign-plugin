@@ -1,0 +1,47 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+
+- name: build image
+  image: plugins/docker
+  pull: if-not-exists
+  settings:
+    insecure: true
+    registry: localhost:5001
+    repo: localhost:5001/example/hello-world
+    dockerfile: Dockerfile
+  volumes:
+    - name: docker-sock
+      path: /var/run/docker.sock
+- name: sign
+  image: kameshsampath/drone-cosign
+  pull: never
+  network_mode: host
+  settings:
+      sign: true
+      # path relative to sources
+      key: cosign.key
+      key_password: password
+      repo: localhost:5001/example/hello-world
+  volumes:
+    - name: docker-sock
+      path: /var/run/docker.sock
+- name: verify
+  image: kameshsampath/drone-cosign
+  pull: never
+  network_mode: host
+  settings:
+      verify: true
+      # path relative to sources
+      key: cosign.pub
+      repo: localhost:5001/example/hello-world
+  volumes:
+    - name: docker-sock
+      path: /var/run/docker.sock
+
+volumes:
+  - name: docker-sock
+    host:
+      path: /var/run/docker.sock
