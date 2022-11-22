@@ -17,14 +17,14 @@ steps:
       path: /var/run/docker.sock
 - name: sign
   image: kameshsampath/drone-cosign
-  pull: never
   network_mode: host
   settings:
-      sign: true
+      log_level: debug
       # path relative to sources
       key: cosign.key
       key_password: password
-      repo: localhost:5001/example/hello-world
+      images: 
+       - localhost:5001/example/hello-world
   volumes:
     - name: docker-sock
       path: /var/run/docker.sock
@@ -36,7 +36,8 @@ steps:
       verify: true
       # path relative to sources
       key: cosign.pub
-      repo: localhost:5001/example/hello-world
+      images: 
+        - localhost:5001/example/hello-world
   volumes:
     - name: docker-sock
       path: /var/run/docker.sock

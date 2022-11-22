@@ -75,7 +75,7 @@ drone exec
 ```shell
 docker run --rm \
   -e PLUGIN_KEY=$PLUGIN_COSIGN_KEY \
-  -e PLUGIN_REPO="foo/example" \
+  -e PLUGIN_IMAGES="foo/example" \
   -e PLUGIN_KEY_PASSWORD=$PLUGIN_COSIGN_KEY_PASSWORD \
   kameshsampath/drone-cosign
 ```
