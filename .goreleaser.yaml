@@ -4,6 +4,7 @@ gomod:
 builds:
   - id: plugin
     main: main.go
+    dir: cmd/plugin
     binary: plugin
     env:
       - CGO_ENABLED=0
@@ -16,13 +17,11 @@ builds:
     goarch:
       - amd64
       - arm64
-    hooks:
-      post:
-        - cmd: ./scripts/rename.py --target-arch {{ .Target }}
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
-      - LICENSE
+      - LICENSE.md
+      - README.md
 checksum:
   name_template: "checksums.txt"
 snapshot:

@@ -2,7 +2,10 @@
 
 A [Drone](https://drone.io) plugin sign the container images using [sigstore](https://www.sigstore.dev/).
 
->**IMPORTANT:** The plugin is under development and currently does not support all the options provided by `cosign`.
+>**IMPORTANT:**
+
+  - The plugin is under development and currently does not support all the options provided by `cosign`.
+  - Current version only supports keyful signing
 
 ## Usage
 

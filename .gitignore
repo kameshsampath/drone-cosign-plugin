@@ -5,5 +5,7 @@ release/
 dist/
 *.key
 *.pub
+!test.key
+!test.pub
 secrets*
 .direnv
