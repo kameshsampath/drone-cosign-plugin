@@ -34,7 +34,8 @@ func TestPlugin(t *testing.T) {
 		t.Fatalf("could not create test registry server: %v", err)
 	}
 	defer s.Close()
-	repo := "localhost:5001"
+	//repo := "localhost:5001"
+	repo := s.Listener.Addr().String()
 	baseImage := fmt.Sprintf("%s/%s", repo, namespace)
 
 	bo := &kooptions.BuildOptions{
