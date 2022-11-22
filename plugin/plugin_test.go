@@ -33,7 +33,8 @@ func TestPlugin(t *testing.T) {
 	if err != nil {
 		t.Fatalf("could not create test registry server: %v", err)
 	}
-	repo := s.Listener.Addr().String()
+	defer s.Close()
+	repo := "localhost:5001"
 	baseImage := fmt.Sprintf("%s/%s", repo, namespace)
 
 	bo := &kooptions.BuildOptions{
@@ -72,15 +73,29 @@ func TestPlugin(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ref, err := p.Publish(ctx, br, importpath)
+	imageRef, err := p.Publish(ctx, br, importpath)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	log.Printf("Published: %s", ref.Name())
+	log.Printf("Published: %s", imageRef.Name())
 	assert.NoError(t, err)
-	keyRef := path.Join(cwd, "testdata", "test.key")
-	err = cosignImage(keyRef, "password", []string{ref.Name()}, true, nil)
+	privateKey := path.Join(cwd, "testdata", "test.key")
+	err = cosignSign(ctx, Args{
+		Key:         privateKey,
+		KeyPassword: "password",
+		Images:      []string{imageRef.Name()},
+		Insecure:    true,
+	})
+	assert.NoError(t, err)
+
+	//Verify
+	publicKey := path.Join(cwd, "testdata", "test.pub")
+	err = cosignVerify(ctx, Args{
+		Key:      publicKey,
+		Images:   []string{imageRef.Name()},
+		Insecure: true,
+	})
 	assert.NoError(t, err)
 }
 
